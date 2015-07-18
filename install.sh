@@ -10,9 +10,7 @@ mount /dev/sda1 /mnt
 
 pacstrap /mnt base base-devel
 
-genfstab -U -p /mnt >> /mnt/etc/fstab
-
-arch-chroot /mnt /bin/bash
+arch-chroot /mnt /bin/bash -x <<'EOF'
 
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
@@ -39,5 +37,9 @@ mkinitcpio -p linux
 grub-mkconfig -o /boot/grub/grub.cfg
 
 exit
+
+EOF
+
+genfstab -U -p /mnt >> /mnt/etc/fstab
 
 umount /mnt
