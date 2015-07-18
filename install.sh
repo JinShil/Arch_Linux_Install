@@ -1,10 +1,13 @@
 # clear any partitions on the hard disk
 sgdisk -Z /dev/sda
 sgdisk -a 2048 -o /dev/sda
-sgdisk -n 0 /dev/sda
-sgdisk -t 0:8300 /dev/sda
+sgdisk -n 1:0:+200M /dev/sda
+sgdisk -n 1 /dev/sda
+sgdisk -t 1:ef00 /dev/sda
+sgdisk -t 2:8300 /dev/sda
 
-mkfs.ext4 /dev/sda1
+mkfs.vfat /dev/sda1
+mkfs.ext4 /dev/sda2
 
 mount /dev/sda1 /mnt
 
