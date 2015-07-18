@@ -8,6 +8,6 @@ mkfs.ext4 /dev/sda1
 
 mount /dev/sda1 /mnt
 
-pacstrap -i /mnt base base-devel
+pacstrap /mnt base base-devel
 
 genfstab -U -p /mnt >> /mnt/etc/fstab
