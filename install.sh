@@ -39,6 +39,9 @@ sgdisk -c ${PARTITION_EFI_BOOT}:"${LABEL_BOOT_EFI}" ${INSTALL_DRIVE}
 sgdisk -c ${PARTITION_SWAP}:"${LABEL_SWAP}" ${INSTALL_DRIVE}
 sgdisk -c ${PARTITION_ROOT}:"${LABEL_ROOT}" ${INSTALL_DRIVE}
 
+swapoff -a
+sgdisk -p /dev/sda
+
 # make filesystems
 mkfs.vfat -F32 ${INSTALL_DRIVE}${PARTITION_EFI_BOOT}
 mkswap ${INSTALL_DRIVE}${PARTITION_SWAP}
