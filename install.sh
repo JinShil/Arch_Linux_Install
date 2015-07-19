@@ -47,4 +47,4 @@ EOF
 
 genfstab -U -p /mnt >> /mnt/etc/fstab
 
-umount /mnt
+umount /mnt -R
