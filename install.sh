@@ -77,7 +77,6 @@ exit
 
 EOF
 
-mount ${INSTALL_DRIVE}${PARTITION_ROOT} ${MOUNT_PATH}
 mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${BOOT_PATH}
 
 cat > ${BOOT_PATH}/loader/entries/arch.conf <<EOF
