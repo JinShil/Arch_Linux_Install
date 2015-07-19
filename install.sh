@@ -9,7 +9,9 @@ sgdisk -t 2:8300 /dev/sda
 mkfs.vfat /dev/sda1
 mkfs.ext4 /dev/sda2
 
-mount /dev/sda1 /mnt
+mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
 
 pacstrap /mnt base base-devel
 
@@ -31,9 +33,9 @@ sed -i 's/::1\t\tlocalhost.localdomain\tlocalhost/::1\t\tlocalhost.localdomain\t
 
 # set root password
 
-pacman -S --noconfirm grub-bios
+pacman -S --noconfirm grub efibootmgr
 
-grub-install /dev/sda
+grub-install --target=x86_64-efi --efi-directory=boot --bootloader-id=arch_grub /dev/sda
 
 mkinitcpio -p linux
 
