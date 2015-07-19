@@ -71,6 +71,8 @@ pacman -S --noconfirm dosfstools
 
 bootctl --path=${BOOT_PATH} install
 
+mkinitcpio -p linux
+
 exit
 
 EOF
