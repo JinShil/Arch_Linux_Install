@@ -10,7 +10,7 @@ LABEL_BOOT_EFI=bootefi
 LABEL_SWAP=swap
 LABEL_ROOT=root
 MOUNT_PATH=/mnt
-EFI_SYSTEM_PARTITION=/boot
+BOOT_PATH=/boot
 
 # disk prep
 sgdisk -Zog ${INSTALL_DRIVE} # zap all on disk
@@ -44,15 +44,15 @@ mkfs.ext4 ${INSTALL_DRIVE}${PARTITION_ROOT}
 # mount targetmou
 mkdir -p ${MOUNT_PATH}
 mount ${INSTALL_DRIVE}${PARTITION_ROOT} ${MOUNT_PATH}
-mkdir -p ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+mkdir -p ${MOUNT_PATH}${BOOT_PATH}
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${BOOT_PATH}
 
 pacstrap /mnt base base-devel
 
 genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 
-umount ${MOUNT_PATH}${EFI_SYSTEM_PARTITION};
+umount ${MOUNT_PATH}${BOOT_PATH};
 arch-chroot /mnt /bin/bash -x <<EOF
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
@@ -70,27 +70,27 @@ systemctl enable dhcpcd@enp0s3.service
 
 pacman -S dosfstools
 
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${EFI_SYSTEM_PARTITION}
-bootctl --path=${EFI_SYSTEM_PARTITION} install
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${BOOT_PATH}
+bootctl --path=${BOOT_PATH} install
 
 exit
 
 EOF
 
 mount ${INSTALL_DRIVE}${PARTITION_ROOT} ${MOUNT_PATH}
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${BOOT_PATH}
 
-cat > ${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<EOF
+cat > ${BOOT_PATH}/loader/entries/arch.conf <<EOF
 title          Arch Linux
 linux          /vmlinuz-linux
 initrd         /initramfs-linux.img
 options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
 EOF
 
-cat > ${EFI_SYSTEM_PARTITION}/loader/loader.conf <<EOF
+cat > ${BOOT_PATH}/loader/loader.conf <<EOF
 timeout 3
 default arch
 EOF
 
-umount -R ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+umount -R ${MOUNT_PATH}${BOOT_PATH}
 umount -R ${MOUNT_PATH}
