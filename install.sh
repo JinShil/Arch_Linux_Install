@@ -1,17 +1,12 @@
 # clear any partitions on the hard disk
 sgdisk -Z /dev/sda
 sgdisk -a 2048 -o /dev/sda
-sgdisk -n 1:0:+200M /dev/sda
-sgdisk -n 2 /dev/sda
-sgdisk -t 1:ef00 /dev/sda
-sgdisk -t 2:8300 /dev/sda
+sgdisk -n 1:0:0 /dev/sda
+sgdisk -t 1:8300 /dev/sda
 
-mkfs.vfat /dev/sda1
-mkfs.ext4 /dev/sda2
+mkfs.ext4 /dev/sda1
 
-mount /dev/sda2 /mnt
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
+mount /dev/sda1 /mnt
 
 pacstrap /mnt base base-devel
 
@@ -29,13 +24,9 @@ echo ArchLinux > /etc/hostname
 sed -i 's/127.0.0.1\tlocalhost.localdomain\tlocalhost/127.0.0.1\tlocalhost.localdomain\tlocalhost\tArchLinux/g' /etc/hosts
 sed -i 's/::1\t\tlocalhost.localdomain\tlocalhost/::1\t\tlocalhost.localdomain\tlocalhost\tArchLinux/g' /etc/hosts
 
-# systemctl enable dhcpcd@enp0s3.service
+pacman -S grub os-prober
 
-# set root password
-
-pacman -S --noconfirm grub efibootmgr
-
-grub-install --target=x86_64-efi --efi-directory=boot --bootloader-id=arch_grub /dev/sda
+grub-install --recheck /dev/sda
 
 mkinitcpio -p linux
 
