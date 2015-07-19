@@ -77,8 +77,9 @@ sed -i 's/::1\t\tlocalhost.localdomain\tlocalhost/::1\t\tlocalhost.localdomain\t
 
 systemctl enable dhcpcd@enp0s3.service
 
-pacman -S dosftools
+pacman -S dosfstools
 
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} /boot
 bootctl --path=/boot install
 
 cat > /boot/loader/entries/arch.conf <<ARCH_CONF_EOF
