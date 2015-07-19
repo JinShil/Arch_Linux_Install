@@ -10,7 +10,7 @@ LABEL_BOOT_EFI=bootefi
 LABEL_SWAP=swap
 LABEL_ROOT=root
 MOUNT_PATH=/mnt
-EFI_SYSTEM_PARTITION=/boot/efi
+EFI_SYSTEM_PARTITION=/boot
 
 # disk prep
 sgdisk -Zog ${INSTALL_DRIVE} # zap all on disk
@@ -54,7 +54,6 @@ cat /mnt/etc/fstab
 
 umount ${MOUNT_PATH}${EFI_SYSTEM_PARTITION};
 arch-chroot /mnt /bin/bash -x <<EOF
-
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
 export LANG=en_US.UTF-8
@@ -74,20 +73,24 @@ pacman -S dosfstools
 mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${EFI_SYSTEM_PARTITION}
 bootctl --path=${EFI_SYSTEM_PARTITION} install
 
-cat > ${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<ARCH_CONF_EOF
-title          Arch Linux
-linux          /vmlinuz-linux
-initrd         /initramfs-linux.img
-options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
-ARCH_CONF_EOF
-
-cat > ${EFI_SYSTEM_PARTITION}/loader/loader.conf <<LOADER_CONF_EOF
-timeout 3
-default arch
-LOADER_CONF_EOF
-
 exit
 
 EOF
 
-umount -R /mnt
+mount ${INSTALL_DRIVE}${PARTITION_ROOT} ${MOUNT_PATH}
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+
+cat > ${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<EOF
+title          Arch Linux
+linux          /vmlinuz-linux
+initrd         /initramfs-linux.img
+options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
+EOF
+
+cat > ${EFI_SYSTEM_PARTITION}/loader/loader.conf <<EOF
+timeout 3
+default arch
+EOF
+
+umount -R ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+umount -R ${MOUNT_PATH}
