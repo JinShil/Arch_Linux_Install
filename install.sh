@@ -2,7 +2,7 @@
 sgdisk -Z /dev/sda
 sgdisk -a 2048 -o /dev/sda
 sgdisk -n 1:0:+200M /dev/sda
-sgdisk -n 1 /dev/sda
+sgdisk -n 2 /dev/sda
 sgdisk -t 1:ef00 /dev/sda
 sgdisk -t 2:8300 /dev/sda
 
