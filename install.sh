@@ -52,7 +52,6 @@ pacstrap /mnt base base-devel
 genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 
-umount ${MOUNT_PATH}${BOOT_PATH};
 arch-chroot /mnt /bin/bash -x <<EOF
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
@@ -70,14 +69,11 @@ systemctl enable dhcpcd@enp0s3.service
 
 pacman -S dosfstools
 
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${BOOT_PATH}
 bootctl --path=${BOOT_PATH} install
 
 exit
 
 EOF
-
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${BOOT_PATH}
 
 cat > ${BOOT_PATH}/loader/entries/arch.conf <<EOF
 title          Arch Linux
