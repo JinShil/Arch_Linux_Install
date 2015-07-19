@@ -21,7 +21,7 @@ EFI_SYSTEM_PARTITION=/boot/efi
 # boot partitions and the like.
 
 # disk prep
-sgdisk -Z ${INSTALL_DRIVE} # zap all on disk
+sgdisk -Zog ${INSTALL_DRIVE} # zap all on disk
 sgdisk -a 2048 -o ${INSTALL_DRIVE} # new gpt disk 2048 alignment
 
 # create partitions
