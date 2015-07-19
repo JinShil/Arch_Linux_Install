@@ -12,14 +12,6 @@ LABEL_ROOT=root
 MOUNT_PATH=/mnt
 EFI_SYSTEM_PARTITION=/boot/efi
 
-# Here we create three partitions:
-# 1. efi and /boot (one partition does double duty)
-# 2. swap
-# 3. our encrypted root
-# Note that all of these are on a GUID partition table scheme. This proves
-# to be quite clean and simple since we're not doing anything with MBR
-# boot partitions and the like.
-
 # disk prep
 sgdisk -Zog ${INSTALL_DRIVE} # zap all on disk
 sgdisk -a 2048 -o ${INSTALL_DRIVE} # new gpt disk 2048 alignment
@@ -49,7 +41,7 @@ swapon ${INSTALL_DRIVE}${PARTITION_SWAP}
 mkfs.ext4 ${INSTALL_DRIVE}${PARTITION_ROOT}
 # mkswap /dev/sda2
 
-# mount target
+# mount targetmou
 mkdir -p ${MOUNT_PATH}
 mount ${INSTALL_DRIVE}${PARTITION_ROOT} ${MOUNT_PATH}
 mkdir -p ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
@@ -79,17 +71,17 @@ systemctl enable dhcpcd@enp0s3.service
 
 pacman -S dosfstools
 
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} /boot
-bootctl --path=/boot install
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
+bootctl --path=${MOUNT_PATH}${EFI_SYSTEM_PARTITION} install
 
-cat > /boot/loader/entries/arch.conf <<ARCH_CONF_EOF
+cat > ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<ARCH_CONF_EOF
 title          Arch Linux
 linux          /vmlinuz-linux
 initrd         /initramfs-linux.img
 options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
 ARCH_CONF_EOF
 
-cat > /boot/loader/loader.conf <<LOADER_CONF_EOF
+cat > ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}/loader/loader.conf <<LOADER_CONF_EOF
 timeout 3
 default arch
 LOADER_CONF_EOF
