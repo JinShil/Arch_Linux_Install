@@ -71,17 +71,17 @@ systemctl enable dhcpcd@enp0s3.service
 
 pacman -S dosfstools
 
-mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}
-bootctl --path=${MOUNT_PATH}${EFI_SYSTEM_PARTITION} install
+mount -t vfat ${INSTALL_DRIVE}${PARTITION_EFI_BOOT} ${EFI_SYSTEM_PARTITION}
+bootctl --path=${EFI_SYSTEM_PARTITION} install
 
-cat > ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<ARCH_CONF_EOF
+cat > ${EFI_SYSTEM_PARTITION}/loader/entries/arch.conf <<ARCH_CONF_EOF
 title          Arch Linux
 linux          /vmlinuz-linux
 initrd         /initramfs-linux.img
 options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
 ARCH_CONF_EOF
 
-cat > ${MOUNT_PATH}${EFI_SYSTEM_PARTITION}/loader/loader.conf <<LOADER_CONF_EOF
+cat > ${EFI_SYSTEM_PARTITION}/loader/loader.conf <<LOADER_CONF_EOF
 timeout 3
 default arch
 LOADER_CONF_EOF
