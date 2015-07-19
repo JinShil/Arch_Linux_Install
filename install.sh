@@ -69,20 +69,21 @@ systemctl enable dhcpcd@enp0s3.service
 
 pacman -S dosfstools
 
+sleep 3
 bootctl --path=${BOOT_PATH} install
 
 exit
 
 EOF
 
-cat > ${BOOT_PATH}/loader/entries/arch.conf <<EOF
+cat > ${MOUNT_PATH}${BOOT_PATH}/loader/entries/arch.conf <<EOF
 title          Arch Linux
 linux          /vmlinuz-linux
 initrd         /initramfs-linux.img
 options        root=${INSTALL_DRIVE}${PARTITION_ROOT} rw
 EOF
 
-cat > ${BOOT_PATH}/loader/loader.conf <<EOF
+cat > ${MOUNT_PATH}${BOOT_PATH}/loader/loader.conf <<EOF
 timeout 3
 default arch
 EOF
