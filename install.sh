@@ -67,9 +67,8 @@ sed -i 's/::1\t\tlocalhost.localdomain\tlocalhost/::1\t\tlocalhost.localdomain\t
 
 systemctl enable dhcpcd@enp0s3.service
 
-pacman -S dosfstools
+pacman -S --noconfirm dosfstools
 
-sleep 3
 bootctl --path=${BOOT_PATH} install
 
 exit
