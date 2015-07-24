@@ -56,5 +56,17 @@ fi
 startkde
 EOF
 
+# Add run command
+cat > /usr/bin/run << EOF
+#!/bin/bash
+
+if [ $# -gt 0 ] ; then
+    ($@ &) &>/dev/null
+else
+    echo "missing argument"
+fi
+EOF
+
+chmod +x /usr/bin/run
 
 
