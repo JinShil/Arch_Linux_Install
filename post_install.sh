@@ -1,5 +1,7 @@
 set -x
 
+passwd
+
 # Add user mike
 useradd -m -G wheel -s /bin/bash mike
 passwd -d mike

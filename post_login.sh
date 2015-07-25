@@ -1,3 +1,7 @@
+set -x
+
+passwd
+
 # Create xinit script
 cp /etc/X11/xinit/xinitrc ~/.xinitrc
 sed -i 's/^twm/#twm/g' ~/.xinitrc
