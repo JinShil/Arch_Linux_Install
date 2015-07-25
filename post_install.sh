@@ -16,6 +16,7 @@ systemctl start vboxservice
 pacman -S --noconfirm plasma
 pacman -S --noconfirm konsole
 pacman -S --noconfirm kate
+pacman -Rns --noconfirm ksshaskpass
 
 
 
