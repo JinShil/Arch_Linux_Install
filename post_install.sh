@@ -57,7 +57,7 @@ startkde
 EOF
 
 # Add run command
-cat > /usr/bin/run << EOF
+cat > /usr/bin/run <<EOF
 #!/bin/bash
 
 if [ $# -gt 0 ] ; then
