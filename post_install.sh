@@ -9,6 +9,7 @@ passwd -d mike
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /etc/sudoers
 
 # Add Virtualbox stuff
+pacman -S --noconfirm linux-headers
 pacman -S --noconfirm virtualbox-guest-utils xorg-xinit
 
 systemctl enable vboxservice
